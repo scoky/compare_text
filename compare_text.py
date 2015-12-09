@@ -50,7 +50,7 @@ class Word(object):
     def __init__(self, word, line):
         self.word = word
         self.output = word
-        self.clean = word.translate(None, args.translator)
+        self.clean = word.lower().translate(None, args.translator)
         self.valid = self.clean not in Word.COMMON_WORDS[:args.exclude]
         self.line = line
         self.index = None
@@ -62,7 +62,7 @@ def sequence(data, size):
 def parse_file(infile):            
     text = []
     for lineno,line in enumerate(infile):
-        words = [Word(word, lineno+1) for word in line.strip().lower().split()]
+        words = [Word(word, lineno+1) for word in line.strip().split()]
         text.extend(words)
     index = 0
     for word in text:
@@ -83,9 +83,9 @@ def format_sequence(match, text1, text2):
         for m1,m2 in match:
             m1.output = m1.word
             m2.output = m2.word
-        return "%s[FILE1-%d]%s %s\n%s[FILE2-%d]%s %s\n\n" %(color.BLUE, match[0][0].line, color.END, str1, color.GREEN, match[1][0].line, color.END, str2)
+        return "%s[FILE1-%d]%s %s\n%s[FILE2-%d]%s %s\n\n" %(color.BLUE, match[0][0].line, color.END, str1, color.GREEN, match[0][1].line, color.END, str2)
     else:
-        return "[FILE1-%d] %s\n[FILE2-%d] %s\n\n" %(match[0][0].line, str1, match[1][0].line, str2)
+        return "[FILE1-%d] %s\n[FILE2-%d] %s\n\n" %(match[0][0].line, str1, match[0][1].line, str2)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,\
